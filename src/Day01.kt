@@ -2,11 +2,8 @@ private fun parse(input: String) = input
     .split(Regex("\n\n"))
     .map { it.lines().map(String::toInt) }
 
-
 private fun part1(input: List<List<Int>>): Int = input
-    .map { it.sum() }
-    .max()
-
+    .maxOf { it.sum() }
 
 private fun part2(input: List<List<Int>>): Int = input
     .map { it.sum() }
