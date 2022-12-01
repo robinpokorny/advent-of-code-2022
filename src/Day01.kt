@@ -1,6 +1,5 @@
 private fun parse(input: String) = input
     .split(Regex("\n\n"))
-    .map { println(it); it }
     .map { it.lines().map(String::toInt) }
 
 
@@ -9,20 +8,22 @@ private fun part1(input: List<List<Int>>): Int = input
     .max()
 
 
-private fun part2(input: List<String>): Int {
-    return 0
-}
+private fun part2(input: List<List<Int>>): Int = input
+    .map { it.sum() }
+    .sorted()
+    .takeLast(3)
+    .sum()
 
 fun main() {
     val input = parse(readDayInput(1).readText())
 
-    val testParsed = parse(testInput)
+    val testInput = parse(testInput)
 
-    assertEquals(part1(testParsed), 24000)
+    assertEquals(part1(testInput), 24000)
     println("Part1: ${part1(input)}")
 
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(part2(testInput), 45000)
+    println("Part2: ${part2(input)}")
 }
 
 private val testInput = """
