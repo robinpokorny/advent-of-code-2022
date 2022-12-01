@@ -4,14 +4,18 @@ private fun parse(input: String): List<Backpack> = input
     .split("\n\n")
     .map { it.lines().map(String::toInt) }
 
-private fun part1(input: List<Backpack>): Int = input
+private fun sumOfLargestBackpack(input: List<Backpack>): Int = input
     .maxOf { it.sum() }
 
-private fun part2(input: List<Backpack>): Int = input
+private val part1 = ::sumOfLargestBackpack
+
+private fun sumOf3LargestBackpacks(input: List<Backpack>): Int = input
     .map { it.sum() }
     .sorted()
     .takeLast(3)
     .sum()
+
+private val part2 = ::sumOf3LargestBackpacks
 
 fun main() {
     val input = parse(readDayInput(1).joinToString("\n"))
