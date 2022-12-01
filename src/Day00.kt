@@ -7,7 +7,7 @@ private fun part2(input: List<String>): Int {
 }
 
 fun main() {
-    val input = readDayInput(0)
+    val input = readDayInput(0).readLines()
 
     assertEquals(part1(testInput), 0)
     println("Part1: ${part1(input)}")
@@ -16,5 +16,5 @@ fun main() {
     println("Part2: ${part2(input)}")
 }
 
-val testInput = """
+private val testInput = """
 """.trimIndent().lines()
