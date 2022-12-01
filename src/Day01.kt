@@ -1,18 +1,20 @@
-private fun parse(input: String) = input
-    .split(Regex("\n\n"))
+typealias Backpack = List<Int>
+
+private fun parse(input: String): List<Backpack> = input
+    .split("\n\n")
     .map { it.lines().map(String::toInt) }
 
-private fun part1(input: List<List<Int>>): Int = input
+private fun part1(input: List<Backpack>): Int = input
     .maxOf { it.sum() }
 
-private fun part2(input: List<List<Int>>): Int = input
+private fun part2(input: List<Backpack>): Int = input
     .map { it.sum() }
     .sorted()
     .takeLast(3)
     .sum()
 
 fun main() {
-    val input = parse(readDayInput(1).readText())
+    val input = parse(readDayInput(1).joinToString("\n"))
 
     val testInput = parse(testInput)
 

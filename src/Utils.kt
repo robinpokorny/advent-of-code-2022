@@ -3,9 +3,9 @@ import java.io.File
 /**
  * Reads lines from the given input txt file.
  */
-fun readDayInput(day: Int): File {
+fun readDayInput(day: Int): List<String> {
     val fileName = day.toString().padStart(2, '0')
-    return File("src", "Day$fileName.txt")
+    return File("src", "Day$fileName.txt").readLines()
 }
 
 /**
