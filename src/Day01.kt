@@ -20,7 +20,7 @@ private val part2 = ::sumOf3LargestBackpacks
 fun main() {
     val input = parse(readDayInput(1).joinToString("\n"))
 
-    val testInput = parse(testInput)
+    val testInput = parse(rawTestInput)
 
     assertEquals(part1(testInput), 24000)
     println("Part1: ${part1(input)}")
@@ -29,7 +29,7 @@ fun main() {
     println("Part2: ${part2(input)}")
 }
 
-private val testInput = """
+private val rawTestInput = """
 1000
 2000
 3000
