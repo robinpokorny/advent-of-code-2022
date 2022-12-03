@@ -7,26 +7,23 @@ private fun parse(input: String): List<Backpack> = input
 private fun sumOfLargestBackpack(input: List<Backpack>): Int = input
     .maxOf { it.sum() }
 
-private val part1 = ::sumOfLargestBackpack
-
 private fun sumOf3LargestBackpacks(input: List<Backpack>): Int = input
     .map { it.sum() }
     .sorted()
     .takeLast(3)
     .sum()
 
-private val part2 = ::sumOf3LargestBackpacks
-
 fun main() {
     val input = parse(readDayInput(1).joinToString("\n"))
-
     val testInput = parse(rawTestInput)
 
-    assertEquals(part1(testInput), 24000)
-    println("Part1: ${part1(input)}")
+    // PART 1
+    assertEquals(sumOfLargestBackpack(testInput), 24000)
+    println("Part1: ${sumOfLargestBackpack(input)}")
 
-    assertEquals(part2(testInput), 45000)
-    println("Part2: ${part2(input)}")
+    // PART 2
+    assertEquals(sumOf3LargestBackpacks(testInput), 45000)
+    println("Part2: ${sumOf3LargestBackpacks(input)}")
 }
 
 private val rawTestInput = """
