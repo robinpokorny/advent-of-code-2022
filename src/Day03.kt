@@ -7,8 +7,8 @@ private fun parse(input: List<String>): List<Rucksack> = input
 private fun findDuplicate(rucksack: Rucksack): Char {
     val size = rucksack.size
 
-    val left = rucksack.copyOfRange(0, (size + 1) / 2).toSet()
-    val right = rucksack.copyOfRange((size + 1) / 2, size).toSet()
+    val left = rucksack.slice(0 until size / 2).toSet()
+    val right = rucksack.slice(size / 2 until size).toSet()
 
     return (left intersect right).single()
 }
@@ -21,15 +21,13 @@ private fun itemToPriority(char: Char): Int =
 
 private fun sumPrioOfDuplicates(rucksacks: List<Rucksack>) = rucksacks
     .map(::findDuplicate)
-    .map(::itemToPriority)
-    .sum()
+    .sumOf(::itemToPriority)
 
 private fun sumPrioForGroupBadges(input: List<Rucksack>): Int = input
     .map { it.toSet() }
     .chunked(3)
     .map { it.reduce(Set<Char>::intersect).single()  }
-    .map(::itemToPriority)
-    .sum()
+    .sumOf(::itemToPriority)
 
 fun main() {
     val input = parse(readDayInput(3))

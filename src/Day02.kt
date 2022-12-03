@@ -63,8 +63,7 @@ private fun scoreRoundMoveMove(round: Pair<Move, Move>): Int {
 private fun calcTotalScoreMoveMove(rounds: List<Pair<String, String>>): Int =
     rounds
         .map { (first, second) -> toMove(first) to toMove(second) }
-        .map(::scoreRoundMoveMove)
-        .sum()
+        .sumOf(::scoreRoundMoveMove)
 
 /* Part 2 */
 private fun scoreRoundMoveOutcome(round: Pair<Move, Outcome>): Int {
@@ -82,8 +81,7 @@ private fun scoreRoundMoveOutcome(round: Pair<Move, Outcome>): Int {
 private fun calcTotalScoreMoveOutcome(rounds: List<Pair<String, String>>): Int =
     rounds
         .map { (first, second) -> toMove(first) to toOutcome(second) }
-        .map(::scoreRoundMoveOutcome)
-        .sum()
+        .sumOf(::scoreRoundMoveOutcome)
 
 fun main() {
     val input = parse(readDayInput(2))
