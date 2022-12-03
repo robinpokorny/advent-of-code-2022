@@ -21,6 +21,13 @@ private fun sumPrioOfDuplicates(rucksacks: List<Rucksack>) = rucksacks
     .map(::itemToPriority)
     .sum()
 
+private fun sumPrioForGroupBadges(input: List<Rucksack>): Int = input
+    .map { it.toSet() }
+    .chunked(3)
+    .map { it.reduce(fun (prev, next) = prev.intersect(next)).first()  }
+    .map(::itemToPriority)
+    .sum()
+
 fun main() {
     val input = parse(readDayInput(3))
     val testInput = parse(rawTestInput)
@@ -28,6 +35,10 @@ fun main() {
     // PART 1
     assertEquals(sumPrioOfDuplicates(testInput), 157)
     println("Part1: ${sumPrioOfDuplicates(input)}")
+
+    // PART 2
+    assertEquals(sumPrioForGroupBadges(testInput), 70)
+    println("Part2: ${sumPrioForGroupBadges(input)}")
 }
 
 private val rawTestInput = """
