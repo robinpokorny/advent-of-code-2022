@@ -10,11 +10,14 @@ private fun findDuplicate(rucksack: Rucksack): Char {
     val left = rucksack.copyOfRange(0, (size + 1) / 2).toSet()
     val right = rucksack.copyOfRange((size + 1) / 2, size).toSet()
 
-    return left.intersect(right).first()
+    return (left intersect right).single()
 }
 
-private fun itemToPriority(item: Char): Int =
-    if (item.code > 90) item.code - 96 else item.code - 64 + 26
+private fun itemToPriority(char: Char): Int =
+    if (char in 'a'..'z')
+        char - 'a' + 1
+    else
+        char - 'A' + 27
 
 private fun sumPrioOfDuplicates(rucksacks: List<Rucksack>) = rucksacks
     .map(::findDuplicate)
@@ -24,7 +27,7 @@ private fun sumPrioOfDuplicates(rucksacks: List<Rucksack>) = rucksacks
 private fun sumPrioForGroupBadges(input: List<Rucksack>): Int = input
     .map { it.toSet() }
     .chunked(3)
-    .map { it.reduce(fun (prev, next) = prev.intersect(next)).first()  }
+    .map { it.reduce(Set<Char>::intersect).single()  }
     .map(::itemToPriority)
     .sum()
 
