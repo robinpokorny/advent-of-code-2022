@@ -1,7 +1,7 @@
-typealias Rucksack = CharArray
+typealias Rucksack = List<Char>
 
 private fun parse(input: List<String>): List<Rucksack> = input
-    .map { it.toCharArray() }
+    .map { it.toCharArray().toList() }
 
 private fun itemToPriority(char: Char): Int =
     if (char in 'a'..'z')
@@ -10,9 +10,8 @@ private fun itemToPriority(char: Char): Int =
         char - 'A' + 27
 
 private fun findDuplicate(rucksack: Rucksack): Char = rucksack
-    .toList()
     .chunked(rucksack.size / 2)
-    .map(List<Char>::toSet)
+    .map { it.toSet() }
     .reduce(Set<Char>::intersect)
     .single()
 
