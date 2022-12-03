@@ -1,4 +1,6 @@
-private fun part1(input: List<String>): Int {
+private fun parse(input: List<String>) = input
+
+private fun sumPrioOfDuplicates(input: List<String>): Int {
     return 0
 }
 
@@ -7,14 +9,17 @@ private fun part2(input: List<String>): Int {
 }
 
 fun main() {
-    val input = readDayInput(0)
+    val input = parse(readDayInput(0))
+    val testInput = parse(rawTestInput)
 
-    assertEquals(part1(testInput), 0)
-    println("Part1: ${part1(input)}")
+    // PART 1
+    assertEquals(sumPrioOfDuplicates(testInput), 0)
+    println("Part1: ${sumPrioOfDuplicates(input)}")
 
+    // PART 2
     assertEquals(part2(testInput), 0)
     println("Part2: ${part2(input)}")
 }
 
-private val testInput = """
+private val rawTestInput = """
 """.trimIndent().lines()
