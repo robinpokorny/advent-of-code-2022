@@ -1,6 +1,6 @@
-private typealias Assigment = Pair<IntRange, IntRange>
+private typealias Assignment = Pair<IntRange, IntRange>
 
-private fun parse(input: List<String>): List<Assigment> = input
+private fun parse(input: List<String>): List<Assignment> = input
     .map(fun(line): List<IntRange> {
         return line
             .split(",")
@@ -9,18 +9,13 @@ private fun parse(input: List<String>): List<Assigment> = input
     })
     .map { (first, second) -> first to second }
 
-private fun countFullyContaining(assigments: List<Assigment>): Int = assigments
-    .filter { (left, right) ->
+private fun countFullyContaining(assignments: List<Assignment>): Int = assignments
+    .count { (left, right) ->
         left.minus(right).isEmpty() or right.minus(left).isEmpty()
     }
-    .size
 
-private fun countOverlaping(assigments: List<Assigment>): Int = assigments
-    .filter { (left, right) ->
-        val sum = left.plus(right)
-        !sum.distinct().equals(sum)
-    }
-    .size
+private fun countOverlapping(assignments: List<Assignment>): Int = assignments
+    .count { (left, right) -> left.intersect(right).isNotEmpty() }
 
 fun main() {
     val input = parse(readDayInput(4))
@@ -31,8 +26,8 @@ fun main() {
     println("Part1: ${countFullyContaining(input)}")
 
     // PART 2
-    assertEquals(countOverlaping(testInput), 4)
-    println("Part2: ${countOverlaping(input)}")
+    assertEquals(countOverlapping(testInput), 4)
+    println("Part2: ${countOverlapping(input)}")
 }
 
 private val rawTestInput = """
