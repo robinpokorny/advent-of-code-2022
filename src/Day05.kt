@@ -38,23 +38,36 @@ private fun part1(input: Pair<Stacks, Steps>): String {
         .joinToString("")
 }
 
-private fun part2(input: List<String>): Int {
-    return 0
+private fun part2(input: Pair<Stacks, Steps>): String {
+    val (stacks, steps) = input
+
+    return steps
+        .fold(stacks){ s, (count, from, to) ->
+            s[to].addAll(s[from].takeLast(count))
+            repeat(count) { s[from].removeLast() }
+
+            s
+        }
+        .map { it.last() }
+        .joinToString("")
 }
 
 fun main() {
-    val input = parse(readDayInput(5))
-    val testInput = parse(rawTestInput)
-
-    println(input.second[3])
+    val input1 = parse(readDayInput(5))
+    val testInput1 = parse(rawTestInput)
 
     // PART 1
-    assertEquals(part1(testInput), "CMZ")
-    println("Part1: ${part1(input)}")
+    assertEquals(part1(testInput1), "CMZ")
+    println("Part1: ${part1(input1)}")
+
+
+    // We mutate the stacks so we need a new input
+    val input2 = parse(readDayInput(5))
+    val testInput2 = parse(rawTestInput)
 
     // PART 2
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(part2(testInput2), "MCD")
+    println("Part2: ${part2(input2)}")
 }
 
 private val rawTestInput = """
