@@ -1,13 +1,13 @@
 import kotlin.math.max
 
-private fun findMarker(datastream: String): Int {
+private fun findMarker(length: Int, datastream: String): Int {
     return datastream
         .splitToSequence("")
         .withIndex()
         .find { (index) -> datastream
-            .slice(max(0, index - 3)..index)
+            .slice(max(0, index - length + 1)..index)
             .toSet()
-            .size == 4
+            .size == length
         }!!
         .index
         .plus(1)
@@ -21,14 +21,18 @@ fun main() {
     val input = readDayInput(6).single()
 
     // PART 1
-    assertEquals(findMarker("mjqjpqmgbljsphdztnvjfqwrcgsmlb"), 7)
-    assertEquals(findMarker("bvwbjplbgvbhsrlpgdmjqwftvncz"), 5)
-    assertEquals(findMarker("nppdvjthqldpwncqszvftbrmjlhg"), 6)
-    assertEquals(findMarker("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"), 10)
-    assertEquals(findMarker("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"), 11)
-    println("Part1: ${findMarker(input)}")
+    assertEquals(findMarker(4,"mjqjpqmgbljsphdztnvjfqwrcgsmlb"), 7)
+    assertEquals(findMarker(4,"bvwbjplbgvbhsrlpgdmjqwftvncz"), 5)
+    assertEquals(findMarker(4,"nppdvjthqldpwncqszvftbrmjlhg"), 6)
+    assertEquals(findMarker(4,"nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"), 10)
+    assertEquals(findMarker(4,"zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"), 11)
+    println("Part1: ${findMarker(4,input)}")
 
     // PART 2
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(findMarker(14,"mjqjpqmgbljsphdztnvjfqwrcgsmlb"), 19)
+    assertEquals(findMarker(14,"bvwbjplbgvbhsrlpgdmjqwftvncz"), 23)
+    assertEquals(findMarker(14,"nppdvjthqldpwncqszvftbrmjlhg"), 23)
+    assertEquals(findMarker(14,"nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"), 29)
+    assertEquals(findMarker(14,"zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"), 26)
+    println("Part1: ${findMarker(14,input)}")
 }
