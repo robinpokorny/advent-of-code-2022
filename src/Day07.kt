@@ -2,7 +2,7 @@ data class Directory(
     val name: String,
     val parent: Directory?,
     var size: Int? = null,
-    val dirs: MutableMap<String, Directory> = mutableMapOf(),
+    val dirs: MutableList<Directory> = mutableListOf(),
     val files: MutableMap<String, Int> = mutableMapOf()
 )
 
@@ -32,16 +32,14 @@ private fun parseToOutput(input: List<String>): List<TerminalOutput> = input
 private fun countSizes(root: Directory): Unit {
     if (root.size != null) return
 
-    root.dirs.forEach { (_, dir) -> countSizes(dir) }
+    root.dirs.forEach(::countSizes)
 
     root.size = root.files.values.sum() +
-            root.dirs.values.sumOf { it.size ?: 0 }
+            root.dirs.sumOf { it.size ?: 0 }
 }
 
 private fun parseToTree(input: List<String>): Directory {
     val output = parseToOutput(input)
-
-    println(output.size)
 
     val root = Directory("/", null)
 
@@ -51,7 +49,7 @@ private fun parseToTree(input: List<String>): Directory {
                 ".." -> dir.parent!!
                 "/" -> root
                 else -> Directory(line.path, dir)
-                    .also { dir.dirs.set(line.path, it) }
+                    .also { dir.dirs.add(it) }
             }
 
             is TerminalOutput.File -> dir.also {
@@ -68,12 +66,18 @@ private fun parseToTree(input: List<String>): Directory {
 private fun sumDirsUnder100k(root: Directory): Int {
     val x = root.size?.takeIf { it < 100_000 } ?: 0
 
-    return x + root.dirs.values.sumOf(::sumDirsUnder100k)
+    return x + root.dirs.sumOf(::sumDirsUnder100k)
 }
 
-private fun part2(input: List<String>): Int {
-    return 0
+private fun findDirsLargerThan(root: Directory, limit: Int): List<Directory> {
+    if (root.size!! < limit) return listOf()
+
+    return root.dirs.flatMap { findDirsLargerThan(it, limit) }.plus(root)
 }
+
+private fun smallestToDelete(root: Directory): Int =
+    findDirsLargerThan(root, root.size!! - 40000000).minOf { it.size ?: 0 }
+
 
 fun main() {
     val input = parseToTree(readDayInput(7))
@@ -84,8 +88,8 @@ fun main() {
     println("Part1: ${sumDirsUnder100k(input)}")
 
     // PART 2
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(smallestToDelete(testInput), 24933642)
+    println("Part2: ${smallestToDelete(input)}")
 }
 
 private val rawTestInput = """
