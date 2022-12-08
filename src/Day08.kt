@@ -1,4 +1,5 @@
-class Tree(val value: Int, val i: Int, val j: Int)
+class Tree(val value: Int, val i: Int, val j: Int) {
+}
 
 typealias Forrest = List<List<Tree>>
 
@@ -23,8 +24,8 @@ private fun findVisible(forest: Forrest): Int {
         it.foldRight(-1) { tree, highest -> findIn1D(seen)(highest, tree) }
     }
 
-    forest[0].forEachIndexed { i, _ ->
-        val column = forest.map { it[i] }
+    forest[0].forEachIndexed { j, _ ->
+        val column = forest.map { it[j] }
         column.fold(-1, findIn1D(seen))
         column.foldRight(-1) { tree, highest -> findIn1D(seen)(highest, tree) }
     }
@@ -32,10 +33,35 @@ private fun findVisible(forest: Forrest): Int {
     return seen.size
 }
 
+private fun canSeeFrom(tree: Tree, skip: (Tree, Tree) -> Boolean) =
+    { prev: Pair<Int, Boolean>, current: Tree ->
+        if (!prev.second || skip(tree, current)) prev
+        else if (current.value >= tree.value) prev.first + 1 to false
+        else prev.first + 1 to true
+    }
 
-private fun findHighestScenic(forest: Forrest): Int {
-    return 0
-}
+private fun findHighestScenic(forest: Forrest): Int =
+    forest.flatten().maxOf { tree ->
+        val (right) = forest[tree.i].fold(
+            Pair(0, true),
+            canSeeFrom(tree) { t, c -> c.j <= t.j }
+        )
+        val (left) = forest[tree.i].foldRight(Pair(0, true)) { c, prev ->
+            canSeeFrom(tree) { t, c -> c.j >= t.j }(prev, c)
+        }
+
+        val column = forest.map { it[tree.j] }
+
+        val (bottom) = column.fold(
+            Pair(0, true),
+            canSeeFrom(tree) { t, c -> c.i <= t.i }
+        )
+        val (top) = column.foldRight(Pair(0, true)) { c, prev ->
+            canSeeFrom(tree) { t, c -> c.i >= t.i }(prev, c)
+        }
+
+        right * left * bottom * top
+    }
 
 fun main() {
     val input = parse(readDayInput(8))
@@ -46,8 +72,8 @@ fun main() {
     println("Part1: ${findVisible(input)}")
 
     // PART 2
-    // assertEquals(findHighestScenic(testInput), 0)
-    // println("Part2: ${findHighestScenic(input)}")
+    assertEquals(findHighestScenic(testInput), 8)
+    println("Part2: ${findHighestScenic(input)}")
 }
 
 private val rawTestInput = """
