@@ -1,10 +1,11 @@
-class Tree(val value: Int, val i: Int, val j: Int) {
-}
+class Tree(val value: Int, val i: Int, val j: Int) {}
 
 typealias Forrest = List<List<Tree>>
 
 private fun parse(input: List<String>): Forrest = input.mapIndexed { i, line ->
-    line.toList().mapIndexed { j, char -> Tree(char.digitToInt(), i, j) }
+    line.toList().mapIndexed { j, char ->
+        Tree(char.digitToInt(), i, j)
+    }
 }
 
 private fun findIn1D(seen: MutableSet<Tree>) =
@@ -33,9 +34,9 @@ private fun findVisible(forest: Forrest): Int {
     return seen.size
 }
 
-private fun canSeeFrom(tree: Tree, skip: (Tree, Tree) -> Boolean) =
+private fun canSeeFrom(tree: Tree, skip: (Tree) -> Boolean) =
     { prev: Pair<Int, Boolean>, current: Tree ->
-        if (!prev.second || skip(tree, current)) prev
+        if (!prev.second || skip(current)) prev
         else if (current.value >= tree.value) prev.first + 1 to false
         else prev.first + 1 to true
     }
@@ -44,20 +45,20 @@ private fun findHighestScenic(forest: Forrest): Int =
     forest.flatten().maxOf { tree ->
         val (right) = forest[tree.i].fold(
             Pair(0, true),
-            canSeeFrom(tree) { t, c -> c.j <= t.j }
+            canSeeFrom(tree) { d -> d.j <= tree.j }
         )
         val (left) = forest[tree.i].foldRight(Pair(0, true)) { c, prev ->
-            canSeeFrom(tree) { t, c -> c.j >= t.j }(prev, c)
+            canSeeFrom(tree) { d -> d.j >= tree.j }(prev, c)
         }
 
         val column = forest.map { it[tree.j] }
 
         val (bottom) = column.fold(
             Pair(0, true),
-            canSeeFrom(tree) { t, c -> c.i <= t.i }
+            canSeeFrom(tree) { d -> d.i <= tree.i }
         )
         val (top) = column.foldRight(Pair(0, true)) { c, prev ->
-            canSeeFrom(tree) { t, c -> c.i >= t.i }(prev, c)
+            canSeeFrom(tree) { d -> d.i >= tree.i }(prev, c)
         }
 
         right * left * bottom * top
