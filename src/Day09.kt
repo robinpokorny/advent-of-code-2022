@@ -3,7 +3,7 @@ import kotlin.math.sign
 private fun parse(input: List<String>): List<Char> = input
     .flatMap {
         val (dir, steps) = it.split(" ")
-        List(steps.toInt()) { _ -> dir.single() }
+        List(steps.toInt()) { dir.single() }
     }
 
 data class Point(val x: Int, val y: Int)
