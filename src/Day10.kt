@@ -7,10 +7,9 @@ private fun parse(input: List<String>) = input
             listOf(0, diff)
         }
     }
-    .let { listOf(0).plus(it) } // Make index match cycle number
-
 
 private fun countEvery40Cycle(instructions: List<Int>): Int = instructions
+    .let { listOf(0).plus(it) } // Can use `i` instead of `i + 1` below
     .foldIndexed(1 to 0) { i, (x, sum), diff ->
         if (i % 40 == 20)
             Pair(x + diff, sum + i * x)
@@ -19,10 +18,16 @@ private fun countEvery40Cycle(instructions: List<Int>): Int = instructions
     }
     .second
 
+private fun drawDisplay(instructions: List<Int>): List<String> = instructions
+    .scanIndexed(1 to ' ') { i, (x, _), diff -> Pair(
+        x + diff,
+        if (i % 40 in (x - 1)..(x + 1)) '#' else '.'
+    )}
+    .drop(1) // Initial value
+    .map { it.second }
+    .chunked(40) // To lines
+    .map { it.joinToString("") }
 
-private fun part2(input: List<String>): Int {
-    return 0
-}
 
 fun main() {
     val input = parse(readDayInput(10))
@@ -33,9 +38,19 @@ fun main() {
     println("Part1: ${countEvery40Cycle(input)}")
 
     // PART 2
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(drawDisplay(testInput), expectedCrt)
+    println("Part2:")
+    drawDisplay(input).forEach { println(it) }
 }
+
+private val expectedCrt = """
+    ##..##..##..##..##..##..##..##..##..##..
+    ###...###...###...###...###...###...###.
+    ####....####....####....####....####....
+    #####.....#####.....#####.....#####.....
+    ######......######......######......####
+    #######.......#######.......#######.....
+""".trimIndent().lines()
 
 private val rawTestInput = """
     addx 15
