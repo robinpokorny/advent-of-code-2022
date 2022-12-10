@@ -10,12 +10,10 @@ private fun parse(input: List<String>) = input
 
 private fun countEvery40Cycle(instructions: List<Int>): Int = instructions
     .let { listOf(0).plus(it) } // Can use `i` instead of `i + 1` below
-    .foldIndexed(1 to 0) { i, (x, sum), diff ->
-        if (i % 40 == 20)
-            Pair(x + diff, sum + i * x)
-        else
-            Pair(x + diff, sum)
-    }
+    .foldIndexed(1 to 0) { i, (x, sum), diff -> Pair(
+        x + diff,
+        if (i % 40 == 20) sum + i * x else sum
+    )}
     .second
 
 private fun drawDisplay(instructions: List<Int>): List<String> = instructions
@@ -23,7 +21,7 @@ private fun drawDisplay(instructions: List<Int>): List<String> = instructions
         x + diff,
         if (i % 40 in (x - 1)..(x + 1)) '#' else '.'
     )}
-    .drop(1) // Initial value
+    .drop(1) // Drop initial value
     .map { it.second }
     .chunked(40) // To lines
     .map { it.joinToString("") }
