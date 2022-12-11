@@ -1,10 +1,10 @@
 data class Monkey(
     val items: ArrayDeque<Int>,
-    val operation: (Int) -> Int,
+    val operation: (Int, Int?) -> Int,
     val test: Int,
     val onPass: Int,
     val onFail: Int,
-    var inspected: Int = 0
+    var inspected: Long = 0
 )
 
 private fun parse(input: List<String>) = input
@@ -21,28 +21,34 @@ private fun parse(input: List<String>) = input
             it[2]
                 .substring(23)
                 .split(" ")
-                .let { (op, arg) ->
-                    when {
-                        arg == "old" -> { i: Int -> i * i }
-                        op == "*" -> { i -> i * (arg.toInt()) }
-                        op == "+" -> { i -> i + (arg.toInt()) }
-                        else -> error("Unknown operation")
-                    }
-                },
+                .let{(op, arg) -> parseOperation(op, arg)},
             it[3].substring(21).toInt(),
             it[4].substring(29).toInt(),
             it[5].substring(30).toInt(),
         )
     }
 
+private fun parseOperation(op: String, arg: String) = when {
+    arg == "old" -> { i: Int, mod: Int? ->
+        (i.toLong() * i.toLong()).mod(mod ?: Int.MAX_VALUE)
+    }
+    op == "*" -> { i, mod ->
+        (i * (arg.toInt())).mod(mod ?: Int.MAX_VALUE)
+    }
+    op == "+" -> { i, mod ->
+        (i + (arg.toInt())).mod(mod ?: Int.MAX_VALUE)
+    }
+    else -> error("Unknown operation")
+}
 
-private fun part1(monkeys: List<Monkey>): Int {
+
+private fun part1(monkeys: List<Monkey>): Long {
     repeat(20) {
         monkeys.forEach {
             it.inspected += it.items.size
 
             it.items.forEach { item ->
-                val nextItem = it.operation(item) / 3
+                val nextItem = it.operation(item, null) / 3
                 val nextMonkey =
                     if (nextItem % it.test == 0) it.onPass else it.onFail
 
@@ -60,8 +66,36 @@ private fun part1(monkeys: List<Monkey>): Int {
         .let { (a, b) -> a * b }
 }
 
-private fun part2(input: List<Monkey>): Int {
-    return 0
+private fun part2(monkeys: List<Monkey>): Long {
+    val product = monkeys
+        .map { it.test }
+        .reduce(Int::times)
+
+    repeat(10_000) {
+        monkeys.forEach {
+            it.inspected += it.items.size
+
+            it.items.forEach { item ->
+                val nextItem = it.operation(item, product)
+                val nextMonkey =
+                    if (nextItem % it.test == 0) it.onPass else it.onFail
+
+                monkeys[nextMonkey].items.addLast(nextItem)
+            }
+
+            it.items.clear()
+        }
+    }
+
+    monkeys.forEach {
+        println(it.inspected)
+    }
+
+    return monkeys
+        .map { it.inspected }
+        .sortedDescending()
+        .take(2)
+        .let { (a, b) -> a * b }
 }
 
 fun main() {
@@ -73,8 +107,12 @@ fun main() {
     println("Part1: ${part1(input)}")
 
     // PART 2
-    // assertEquals(part2(testInput2), 2713310158)
-    // println("Part2: ${part2(input2)}")
+    // We mutate the Monkeys, so we need a new input
+    val input2 = parse(readDayInput(11))
+    val testInput2 = parse(rawTestInput)
+
+    assertEquals(part2(testInput2), 2713310158)
+    println("Part2: ${part2(input2)}")
 }
 
 private
