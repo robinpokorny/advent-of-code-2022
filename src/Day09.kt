@@ -6,8 +6,6 @@ private fun parse(input: List<String>): List<Char> = input
         List(steps.toInt()) { dir.single() }
     }
 
-data class Point(val x: Int, val y: Int)
-
 private fun moveHead(head: Point, move: Char): Point = when (move) {
     'R' -> head.copy(x = head.x + 1)
     'L' -> head.copy(x = head.x - 1)

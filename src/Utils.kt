@@ -14,3 +14,5 @@ fun readDayInput(day: Int): List<String> {
 fun <T> assertEquals(actual: T, expected: T) {
     check(actual == expected) { "Assert failed: expected `$expected`, received `$actual`" }
 }
+
+data class Point(val x: Int, val y: Int)
