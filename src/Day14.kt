@@ -23,38 +23,49 @@ private fun parse(input: List<String>) = input.flatMap { line ->
 
 private tailrec fun moveGrain(
     from: Point,
-    voidStart: Int,
-    taken: HashSet<Point>
+    isFinished: (Point) -> Boolean,
+    taken: HashSet<Point>,
+    floor: Int = Int.MAX_VALUE
 ): Boolean {
-    if (from.y >= voidStart) return true
+    if (isFinished(from)) return true
 
     listOf(0, -1, 1)
         .map { Point(from.x + it, from.y + 1) }
-        .find { !taken.contains(it) }
-        ?.let { return moveGrain(it, voidStart, taken) }
+        .find { !taken.contains(it) && it.y < floor }
+        ?.let { return moveGrain(it, isFinished, taken, floor) }
 
     taken.add(from)
     return false
 }
-
 
 private fun part1(cave: List<Point>): Int {
     val taken = cave.toHashSet()
     val source = Point(500, 0)
     val voidStart = cave.maxOf { it.y }
     var sandGrains = -1
-    var fallIntoVoid = false
+    var finished = false
 
-    while (!fallIntoVoid) {
+    while (!finished) {
         sandGrains++
-        fallIntoVoid = moveGrain(source, voidStart, taken)
+        finished = moveGrain(source, { it.y >= voidStart }, taken)
     }
 
     return sandGrains
 }
 
-private fun part2(input: List<String>): Int {
-    return 0
+private fun part2(cave: List<Point>): Int {
+    val taken = cave.toHashSet()
+    val source = Point(500, 0)
+    val floor = cave.maxOf { it.y } + 2
+    var sandGrains = -1
+    var finished = false
+
+    while (!finished) {
+        sandGrains++
+        finished = moveGrain(source, { _ -> taken.contains(source) }, taken, floor)
+    }
+
+    return sandGrains
 }
 
 fun main() {
@@ -66,8 +77,8 @@ fun main() {
     println("Part1: ${part1(input)}")
 
     // PART 2
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(part2(testInput), 93)
+    println("Part2: ${part2(input)}")
 }
 
 private val rawTestInput = """
