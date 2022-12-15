@@ -10,9 +10,9 @@ private val lineRe =
     Regex("Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)")
 
 private fun parse(input: List<String>): List<Sensor> = input
-    .map {
+    .map { line ->
         val (sx, sy, bx, by) = lineRe
-            .matchEntire(it)!!
+            .matchEntire(line)!!
             .destructured
             .toList()
             .map { it.toInt() }
