@@ -1,5 +1,4 @@
 import kotlin.math.*
-import kotlin.system.measureTimeMillis
 
 private data class Sensor(
     val position: Point,
@@ -25,7 +24,7 @@ private fun parse(input: List<String>): List<Sensor> = input
         )
     }
 
-private fun seenOnRow(sensors: List<Sensor>, row: Int) = sensors
+private fun seenRangesOnRow(sensors: List<Sensor>, row: Int) = sensors
     .mapNotNull { (position, _, distance) ->
         val side = distance - abs(position.y - row)
         if (side > 0)
@@ -34,8 +33,8 @@ private fun seenOnRow(sensors: List<Sensor>, row: Int) = sensors
             null
     }
 
-private fun part1(sensors: List<Sensor>, row: Int): Int {
-    val seen = seenOnRow(sensors, row)
+private fun seenOnRow(sensors: List<Sensor>, row: Int): Int {
+    val seen = seenRangesOnRow(sensors, row)
 
     // For some reason this is quite fast
     val visibleOnRow = seen.fold(mutableSetOf<Int>()) { prev, next ->
@@ -51,21 +50,40 @@ private fun part1(sensors: List<Sensor>, row: Int): Int {
     return visibleOnRow - beaconsOnRow
 }
 
-private fun part2(input: List<String>): Int {
-    return 0
-}
+private fun unseenPoint(sensors: List<Sensor>, limit: Int): Long =
+    (0..limit)
+        .firstNotNullOf(fun(row: Int): Point? {
+            val seen = seenRangesOnRow(sensors, row).sortedBy { it.start }
+
+            if (seen.first().start > 0) {
+                return Point(0, row)
+            }
+
+            var lastSeen = seen.first().endInclusive
+
+            return seen.firstNotNullOfOrNull {
+                if (it.start > lastSeen + 1)
+                    Point(lastSeen + 1, row)
+                else {
+                    lastSeen = max(lastSeen, it.endInclusive)
+                    null
+                }
+            }
+        })
+        .let { it.x.toLong() * 4_000_000 + it.y }
+
 
 fun main() {
     val input = parse(readDayInput(15))
     val testInput = parse(rawTestInput)
 
     // PART 1
-    assertEquals(part1(testInput, 10), 26)
-    println("Part1: ${part1(input, 2_000_000)}")
+    assertEquals(seenOnRow(testInput, 10), 26)
+    println("Part1: ${seenOnRow(input, 2_000_000)}")
 
     // PART 2
-    // assertEquals(part2(testInput), 0)
-    // println("Part2: ${part2(input)}")
+    assertEquals(unseenPoint(testInput, 20), 56000011)
+    println("Part2: ${unseenPoint(input, 4_000_000)}")
 }
 
 private val rawTestInput = """
