@@ -9,7 +9,6 @@ private fun line(from: Point, to: Point): List<Point> =
     else
         error("No support for diagonals.")
 
-
 private fun parse(input: List<String>) = input.flatMap { line ->
     line
         .split(" -> ")
