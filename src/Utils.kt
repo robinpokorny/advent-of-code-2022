@@ -15,4 +15,13 @@ fun <T> assertEquals(actual: T, expected: T) {
     check(actual == expected) { "Assert failed: expected `$expected`, received `$actual`" }
 }
 
-data class Point(val x: Int, val y: Int)
+data class Point(val x: Int, val y: Int) {
+    operator fun plus(other: Point) = Point(other.x + x, other.y + y)
+
+    companion object {
+        val LEFT = Point(-1, 0)
+        val RIGHT = Point(1, 0)
+        val UP = Point(0, 1)
+        val DOWN = Point(0, -1)
+    }
+}

@@ -1,5 +1,5 @@
 /* Move - enum and utils */
-enum class Move {
+private enum class Move {
     ROCK, PAPER, SCISSORS;
 }
 
